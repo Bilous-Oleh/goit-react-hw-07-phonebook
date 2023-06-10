@@ -1,26 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import React from 'react';
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact, removeContact } from 'redux/contactsSlice';
+import { Filter } from 'components/Filter/Filter';
+import { setFilter } from 'redux/filterSlice';
 import PhonebookForm from 'components/PhonebookForm/PhonebookForm';
 import ContactList from 'components/ContactList/ContactList';
-import { Filter } from 'components/Filter/Filter';
 
 const App = () => {
-  const [contacts, setContacts] = useState(
-    JSON.parse(localStorage.getItem('contacts')) ?? [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ]
-  );
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(state => state.contacts.contacts);
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  const filter = useSelector(state => state.filter.filter);
 
-  const addContact = contactData => {
+  const dispatch = useDispatch();
+
+  const handleAddContact = contactData => {
     if (contacts.some(contact => contact.name === contactData.name)) {
       toast.error(`Contact with ${contactData.name} already exists`, {
         position: 'top-right',
@@ -35,7 +30,7 @@ const App = () => {
 
       return;
     }
-    setContacts(contacts => [...contacts, contactData]);
+    dispatch(addContact(contactData));
   };
 
   const getFilteredContact = () => {
@@ -44,23 +39,23 @@ const App = () => {
     );
   };
 
-  const deleteContact = id => {
-    setContacts(contacts => contacts.filter(contact => contact.id !== id));
+  const handleDeleteContact = id => {
+    dispatch(removeContact(id));
   };
 
   const handleFilter = event => {
-    setFilter(event.currentTarget.value);
+    dispatch(setFilter(event.currentTarget.value));
   };
 
-  const filterdContacts = getFilteredContact();
+  const filteredContacts = getFilteredContact();
 
   return (
     <div>
-      <PhonebookForm onSubmit={addContact}></PhonebookForm>
+      <PhonebookForm onSubmit={handleAddContact}></PhonebookForm>
       <Filter value={filter} onChange={handleFilter} />
       <ContactList
-        contacts={filterdContacts}
-        onDelete={deleteContact}
+        contacts={filteredContacts}
+        onDelete={handleDeleteContact}
       ></ContactList>
       <ToastContainer />
     </div>
