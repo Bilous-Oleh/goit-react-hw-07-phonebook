@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact, removeContact } from 'redux/contactsSlice';
+
 import { Filter } from 'components/Filter/Filter';
 import { setFilter } from 'redux/filterSlice';
 import PhonebookForm from 'components/PhonebookForm/PhonebookForm';
 import ContactList from 'components/ContactList/ContactList';
+import {
+  addContactThunk,
+  fetchContactsThunk,
+  removeContactThunk,
+} from 'redux/operation';
 
 const App = () => {
   const contacts = useSelector(state => state.contacts.contacts);
-
+  const isLoading = useSelector(state => state.contacts.isLoading);
   const filter = useSelector(state => state.filter.filter);
+  // const error = useSelector(state => state.contacts.error);
 
   const dispatch = useDispatch();
 
@@ -30,8 +36,12 @@ const App = () => {
 
       return;
     }
-    dispatch(addContact(contactData));
+    dispatch(addContactThunk(contactData));
   };
+
+  useEffect(() => {
+    dispatch(fetchContactsThunk());
+  }, [dispatch]);
 
   const getFilteredContact = () => {
     return contacts.filter(contact =>
@@ -40,7 +50,7 @@ const App = () => {
   };
 
   const handleDeleteContact = id => {
-    dispatch(removeContact(id));
+    dispatch(removeContactThunk(id));
   };
 
   const handleFilter = event => {
@@ -53,6 +63,7 @@ const App = () => {
     <div>
       <PhonebookForm onSubmit={handleAddContact}></PhonebookForm>
       <Filter value={filter} onChange={handleFilter} />
+      {isLoading && <p>Loading contacts...</p>}
       <ContactList
         contacts={filteredContacts}
         onDelete={handleDeleteContact}

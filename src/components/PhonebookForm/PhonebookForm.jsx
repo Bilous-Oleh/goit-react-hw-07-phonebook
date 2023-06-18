@@ -20,7 +20,7 @@ const PhonebookForm = ({ onSubmit }) => {
     const contactData = {
       id: nanoid(),
       name: name,
-      number: number,
+      phone: number,
     };
 
     onSubmit(contactData);

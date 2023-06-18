@@ -4,7 +4,7 @@ export const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: start;
-  max-width: 350px;
+  max-width: 490px;
   width: 100%;
   margin: 20px auto 20px;
   border: 1px solid #ccc;
@@ -21,10 +21,11 @@ export const StyledForm = styled.form`
   .form-label {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     width: 60%;
   }
   .input-form {
+    height: 24px;
     &::placeholder {
       color: #ccc;
     }
@@ -37,8 +38,16 @@ export const StyledForm = styled.form`
 
   .form-btn {
     cursor: pointer;
+    width: 150px;
+    height: 28px;
     margin-top: 10px;
-    font-size: 10px;
+    font-size: 16px;
     box-shadow: 4px 4px 4px rgb(0 0 0 / 15%);
+    &:hover {
+      background-color: orange;
+      border-radius: 4px;
+      border: #ccc;
+      height: 28px;
+    }
   }
 `;
